@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hover Drawer Slider</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: #f4f6f8;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Left Section */
+        .left-section {
+            flex: 1;
+            background-color: #ffffff;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            max-width: 25%;
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .left-section h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .left-section p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+
+        .know-more {
+            text-decoration: none;
+            font-size: 1.2rem;
+            color: black;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .know-more:hover {
+            color: white;
+        }
+
+        .know-more::after {
+            content: '';
+            display: inline-block;
+            width: 0;
+            height: 0;
+            margin-left: 10px;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+            border-left: 8px solid #C55A11;
+        }
+
+        /* Right Section */
+        .right-section {
+            flex: 3;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .slide {
+            width: 80px; /* Increased width from 60px to 80px */
+            height: 400px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 10px;
+            position: relative;
+            transition: width 0.6s ease, transform 0.3s ease;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .slide:first-child {
+            width: 350px;
+        }
+
+        .slide:not(:first-child):hover {
+            width: 350px;
+        }
+
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: background 0.4s ease;
+        }
+
+        .slide:hover::before {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Top Text Styling for All Slides */
+        .top-text {
+            position: absolute;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+            line-height: 1.2;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Move top-text to the bottom for all slides */
+        .slide .top-text {
+            bottom: 20px;
+            top: auto;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Hide top-text when slide is open */
+        .slide.default-open .top-text {
+            opacity: 0;
+        }
+
+        /* Slide content positioning */
+        .slide-content {
+            position: absolute;
+            top: 20px; /* Move content to the top */
+            left: 20px;
+            color: white;
+            font-size: 1.3rem;
+            z-index: 1;
+            opacity: 0;
+            transform: translateY(-30px); /* Move text up */
+            line-height: 40px;
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .slide:hover .slide-content {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .slide-content-right {
+            position: absolute;
+            top: 20px; /* Move content to the top */
+            right: 20px;
+            color: white;
+            font-size: 1.3rem;
+            opacity: 0;
+            transform: translateY(-30px); /* Move text up */
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .slide:hover .slide-content-right {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Slide background images */
+        .slide-1 {
+            background-image: url('http://demo.practic-alt.com/wp-content/uploads/2024/09/student-online-cute-girl-glasses-sweater-studying-computer-writing-notes-1.webp');
+        }
+
+        .slide-2 {
+            background-image: url('http://demo.practic-alt.com/wp-content/uploads/2024/09/student-online-cute-girl-glasses-sweater-studying-computer-writing-notes-1.webp');
+        }
+
+        .slide-3 {
+            background-image: url('http://demo.practic-alt.com/wp-content/uploads/2024/09/student-online-cute-girl-glasses-sweater-studying-computer-writing-notes-1.webp?fit=crop&w=350&h=400');
+        }
+
+        /* Show the content by default for the first slide */
+        .slide-1.default-open .slide-content,
+        .slide-1.default-open .slide-content-right {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Adjust slide-content positions for the first slide */
+        .slide-1 .slide-content,
+        .slide-1 .slide-content-right {
+            bottom: auto; /* Reset bottom */
+            top: 20px; /* Position at top */
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Left Section -->
+    <div class="left-section">
+        <h1 id="dynamic-title">Team</h1>
+        <p id="dynamic-text">Collaborate with the best in the field.</p>
+        <a href="#" class="know-more">Know More</a>
+    </div>
+
+    <!-- Right Section (Hover Sliders) -->
+    <div class="right-section">
+        <!-- First Slider -->
+        <div class="slide slide-1 default-open" data-title="Team" data-text="Collaborate with the best in the field.">
+            <div class="top-text">T<br>e<br>a<br>m</div>
+            <div class="slide-content">Slide 1 Left Text</div>
+            <div class="slide-content-right">Slide 1 Right Text</div>
+        </div>
+
+        <!-- Second Slider -->
+        <div class="slide slide-2" data-title="Growth" data-text="Expand and grow your potential.">
+            <div class="top-text">G<br>r<br>o<br>w<br>t<br>h</div>
+            <div class="slide-content">Slide 2 Left Text</div>
+            <div class="slide-content-right">Slide 2 Right Text</div>
+        </div>
+
+        <!-- Third Slider -->
+        <div class="slide slide-3" data-title="Build" data-text="Create and innovate amazing projects.">
+            <div class="top-text">B<br>u<br>i<br>l<br>d</div>
+            <div class="slide-content">Slide 3 Left Text</div>
+            <div class="slide-content-right">Slide 3 Right Text</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Get elements
+    const dynamicTitle = document.getElementById('dynamic-title');
+    const dynamicText = document.getElementById('dynamic-text');
+    const slides = document.querySelectorAll('.slide');
+    const firstSlide = document.querySelector('.slide-1');
+
+    slides.forEach(slide => {
+        slide.addEventListener('mouseenter', function() {
+            const newTitle = this.getAttribute('data-title');
+            const newText = this.getAttribute('data-text');
+            dynamicTitle.textContent = newTitle;
+            dynamicText.textContent = newText;
+
+            // Remove 'default-open' from all slides
+            slides.forEach(s => {
+                s.classList.remove('default-open');
+                // Ensure that the slide that is not hovered collapses
+                if (s !== this) {
+                    s.style.width = '80px'; // Updated width to match the increased width
+                }
+            });
+
+            // Add 'default-open' to the hovered slide
+            this.classList.add('default-open');
+            this.style.width = '350px'; // Expand the hovered slide
+        });
+    });
+
+    // Reset to default when leaving the right section
+    document.querySelector('.right-section').addEventListener('mouseleave', function() {
+        dynamicTitle.textContent = 'Team';
+        dynamicText.textContent = 'Collaborate with the best in the field.';
+
+        // Ensure first slide is the default-open slide
+        slides.forEach(s => {
+            s.classList.remove('default-open');
+            s.style.width = '80px'; // Reset to increased width
+        });
+        firstSlide.classList.add('default-open');
+        firstSlide.style.width = '350px'; // Expand the first slide
+    });
+
+    // Initialize with the first slide open
+    firstSlide.classList.add('default-open');
+    firstSlide.style.width = '350px'; // Ensure the first slide is expanded initially
+</script>
+
+</body>
+</html>
